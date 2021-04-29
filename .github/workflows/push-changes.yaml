@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - push-changes-2
+      - main
 name: push-interest-changes
 jobs:
   build:
@@ -24,7 +24,7 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         commit-message: "chore: update interests.svg"
         author: "actions-bot <github-actions-bot@google.com>"
-        title: "chore: build dist"
+        title: "chore: update interests.svg"
         labels: automated pr
         branch: create-pull-request/update-interests
         delete-branch: true
