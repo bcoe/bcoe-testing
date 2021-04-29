@@ -1,0 +1,40 @@
+on:
+  push:
+    branches:
+      - push-changes-2
+name: push-interest-changes
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: install
+      run: npm install
+    - name: build
+      run: npm run generate
+    - name: commit
+      run: |-
+        set -e
+        git config --global user.name "actions-bot"
+        git config user.email 'github-actions-bot@google.com'
+        git add interests.svg
+        git commit -m "chore: update interests.svg"
+        DIFF=$(git diff HEAD~1)
+        echo $DIFF
+        # set env vars
+        echo 'DIFF<<EOF' >> $GITHUB_ENV
+        echo "${DIFF}" >> $GITHUB_ENV
+        echo 'EOF' >> $GITHUB_ENV
+    - name: Create PR with dist
+      uses: peter-evans/create-pull-request@v3
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: "chore: update interests.svg"
+        author: "actions-bot <github-actions-bot@google.com>"
+        title: "chore: build dist"
+        body: |
+          Build dist PR
+          ${{env.DIFF}}
+        labels: automated pr
+        branch: create-pull-request/update-interests
+        delete-branch: true
